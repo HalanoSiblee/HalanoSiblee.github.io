@@ -47,4 +47,23 @@
 		color: #FF00FF;
 	}
 }
+.dbar{
+  display:flex;
+  position: absolute;
+  width:100%;
+  bottom:0%;
+  text-align: center;
+  justify-content: space-between;
 
+}
+a:link {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+}
+
+a:visited {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+}
