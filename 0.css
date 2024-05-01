@@ -29,7 +29,8 @@
 	  animation-direction: alternate;
 	  animation-timing-function: linear; 
 }
-
+  img{transform:scale(0.8);transition:all .8s ;}
+  img:hover{transform:scale(1);}
 @keyframes stra {
 	0% {
 		color: #FF0000;
@@ -54,7 +55,6 @@
   bottom:0%;
   text-align: center;
   justify-content: space-between;
-
 }
 a:link {
     text-decoration: inherit;
