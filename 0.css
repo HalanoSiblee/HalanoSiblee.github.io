@@ -29,8 +29,15 @@
 	  animation-direction: alternate;
 	  animation-timing-function: linear; 
 }
-  img{transform:scale(0.8);transition:all .8s ;}
-  img:hover{transform:scale(1);}
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+  .protoimg{display: block;transform:scale(0.8);transition:all .8s ;image-rendering: pixelated;}
+  .protoimg:hover{transform:scale(1);}
 @keyframes stra {
 	0% {
 		color: #FF0000;
@@ -66,4 +73,21 @@ a:visited {
     text-decoration: inherit;
     color: inherit;
     cursor: auto;
+}
+.rotating-magic {
+  position: absolute;
+  width: 50%;
+  height: auto;
+  object-fit: cover;
+  left: 25%;
+  animation: rotate 30s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
 }
