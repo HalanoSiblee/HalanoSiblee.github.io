@@ -73,6 +73,8 @@ a:visited {
   object-fit: cover;
   left: 25%;
   animation: rotate 30s linear infinite;
+	pointer-events: none;
+  user-select: none;
 }
 
 @keyframes rotate {
