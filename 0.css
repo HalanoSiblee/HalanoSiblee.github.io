@@ -1,0 +1,97 @@
+  body {
+    overflow:hidden;
+    background-color:black;
+    background-image: url('980');
+    background-repeat: repeat;
+    font-family:monospace;
+    font-size: 15px;
+    color:white;
+    background-attachment: fixed;
+  }
+@media only screen and (max-width: 600px) {
+    html{
+        background-color: black;
+    }
+    body {
+      display:none;
+    }
+}
+  ::selection {
+    color: white;
+    background: #00000000;
+    text-shadow: 0px 0px 5px #FFFFFF;
+}
+  .str {
+    font-size:32px;
+	  animation-name: stra;
+	  animation-duration: 5s;
+	  animation-iteration-count: infinite;
+	  animation-direction: alternate;
+	  animation-timing-function: linear; 
+}
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+  .protoimg{display: block;transform:scale(0.8);transition:all .8s ;image-rendering: pixelated;}
+  .protoimg:hover{transform:scale(1);}
+@keyframes stra {
+	0% {
+		color: #FF0000;
+	}
+	25% {
+		color: #FFFF00;
+	}
+	50% {
+		color: #00FF00;
+	}
+	75% {
+		color: #0000FF;
+	}
+	100% {
+		color: #FF00FF;
+	}
+}
+a:link {
+    text-decoration: inherit;
+    color: inherit;
+    cursor:default;
+}
+
+a:visited {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+}
+.rotating-magic {
+  position: absolute;
+  width: 50%;
+  height: auto;
+  object-fit: cover;
+  left: 25%;
+  animation: rotate 30s linear infinite;
+	pointer-events: none;
+  user-select: none;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+.divo {
+	position:absolute;
+	padding: 5px;
+	border: 1px solid white;
+	border-spacing:5px;
+
+}
+.divo:hover {
+	background-color: #FFFFFF30;
+  }
