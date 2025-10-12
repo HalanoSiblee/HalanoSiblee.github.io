@@ -7,6 +7,7 @@
     font-size: 15px;
     color:white;
     background-attachment: fixed;
+    scrollbar-color: white black;
   }
 @media only screen and (max-width: 600px) {
     html{
