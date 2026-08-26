@@ -44,5 +44,18 @@
     <div class="divo" style="top: 30%;">  <a href="halanobio">[Bio] </a><br></div>
     <div class="divo" style="top: 40%;">  <a href="communities">[Communities] </a><br></div>
     <div class="divo" style="top: 50%;">  <a href="chillzone">[Chillzone] </a><br></div>
+<script>
+const protoimg = document.querySelector('.protoimg');
+const magicCircle = document.querySelector('.rotating-magic');
+
+protoimg.addEventListener('click', () => {
+    magicCircle.classList.remove('rgb-flash');
+
+    // Restart the RGB animation if clicked again quickly.
+    void magicCircle.offsetWidth;
+
+    magicCircle.classList.add('rgb-flash');
+});
+</script>
  </body>
 </html>
