@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Halano software projects</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background-image: url('54a4b202-6760-4557-ab07-f85c1f804502');
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 340px;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.20);
+      backdrop-filter: blur(8px);
+      box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+      padding: 20px;
+      box-sizing: border-box;
+      position: fixed;
+      left: 0;
+      top: 0;
+      overflow-y: auto;
+    }
+    .preview-card {
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      text-decoration: none;
+      color: #111;
+    }
+    .preview-card img { width: 100%; height: 120px; object-fit: cover; }
+    .preview-content { padding: 10px; }
+    .status-card {
+      padding: 10px;
+      background: rgba(255,255,255,0.75);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <h2>Projects</h2>
+    <div id="preview-container"></div>
+  </aside>
+
+  <!-- Load links via script tag (Works locally on file:// without CORS block) -->
+  <script src="projects.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof projectLinks === 'undefined') {
+        document.getElementById('preview-container').innerHTML = 
+          '<div class="status-card">Error: proj.js not found or empty.</div>';
+        return;
+      }
+
+      const urls = projectLinks.split(/\r?\n/)
+                               .map(u => u.trim())
+                               .filter(u => u.length > 0 && u.startsWith('http'));
+
+      renderPreviews(urls);
+    });
+
+    async function renderPreviews(urls) {
+      const container = document.getElementById('preview-container');
+      container.innerHTML = '';
+
+      for (const url of urls) {
+        const loadingEl = document.createElement('div');
+        loadingEl.className = 'status-card';
+        loadingEl.textContent = `Loading preview for ${new URL(url).hostname}...`;
+        container.appendChild(loadingEl);
+
+        try {
+          const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(url)}`);
+          const json = await res.json();
+
+          if (json.status === 'success') {
+            const data = json.data;
+            const card = document.createElement('a');
+            card.className = 'preview-card';
+            card.href = url;
+            card.target = '_blank';
+            card.innerHTML = `
+              ${data.image?.url ? `<img src="${data.image.url}">` : ''}
+              <div class="preview-content">
+                <strong>${data.title || url}</strong>
+                <p style="font-size:0.75rem; color:#555; margin:4px 0 0 0;">${data.description || ''}</p>
+              </div>
+            `;
+            container.replaceChild(card, loadingEl);
+          }
+        } catch (e) {
+          loadingEl.textContent = `Failed to load: ${url}`;
+        }
+      }
+    }
+  </script>
+</body>
+</html>
