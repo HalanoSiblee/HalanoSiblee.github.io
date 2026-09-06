@@ -1,5 +1,6 @@
 // proj.js
 const projectLinks = `
+https://github.com/JackTulli/Linux-explorer
 https://github.com/HalanoSiblee/Fl-archpkg-browser
 https://github.com/HalanoSiblee/XlaserX
 https://github.com/HalanoSiblee/RaymothFM
