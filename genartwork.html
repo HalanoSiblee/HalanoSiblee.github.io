@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <title>Lazy Loaded Feed</title>
+  <style>
+    :root {
+      --bg-color: #000000;
+      --card-bg: #111111;
+      --border-color: #222222;
+      --text-main: #ffffff;
+      --text-muted: #888888;
+      --accent: #3b82f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Fixed Search Bar */
+    header {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .search-wrapper {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 9999px;
+      background: #181818;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+
+    /* Centered Container */
+    main {
+      width: 100%;
+      max-width: 600px;
+      padding: 24px 16px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Card Styling */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-img-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background-color: #1a1a1a;
+      overflow: hidden;
+      cursor: zoom-in;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.3s ease;
+    }
+
+    .card img.loaded {
+      opacity: 1;
+    }
+
+    .card:hover img.loaded {
+      transform: scale(1.02);
+    }
+
+    .card-content {
+      padding: 18px 20px;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .feed-footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 24px 0;
+    }
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 100;
+      cursor: zoom-out;
+      padding: 20px;
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox img {
+      max-width: 95vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 6px;
+      transform: scale(0.96);
+      transition: transform 0.2s ease;
+    }
+
+    .lightbox.active img {
+      transform: scale(1);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 18px;
+      right: 24px;
+      font-size: 30px;
+      color: #fff;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="search-wrapper">
+      <input 
+        type="text" 
+        id="searchBar" 
+        class="search-input" 
+        placeholder="Search title or description..." 
+        autocomplete="off"
+      />
+    </div>
+  </header>
+
+  <main>
+    <div id="feed" style="display: flex; flex-direction: column; gap: 32px;"></div>
+    <div id="feedFooter" class="feed-footer">Loading...</div>
+  </main>
+
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightboxImg" src="" alt="Fullscreen view" />
+  </div>
+
+  <script>
+    const JSON_URL = './genpix.json';
+
+    let allItems = [];
+    const feed = document.getElementById("feed");
+    const feedFooter = document.getElementById("feedFooter");
+    const searchInput = document.getElementById("searchBar");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          img.src = img.dataset.src;
+
+          img.onload = () => img.classList.add("loaded");
+          observer.unobserve(img);
+        }
+      });
+    }, {
+      rootMargin: "150px"
+    });
+
+    function renderCards(items) {
+      feed.innerHTML = "";
+
+      if (items.length === 0) {
+        feedFooter.textContent = "No matching results.";
+        return;
+      }
+
+      items.forEach(item => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="card-img-wrap">
+            <img data-src="${item.src}" alt="${item.title}" />
+          </div>
+          <div class="card-content">
+            <h2 class="card-title">${item.title}</h2>
+            <p class="card-desc">${item.desc}</p>
+          </div>
+        `;
+
+        const img = card.querySelector("img");
+        imageObserver.observe(img);
+        img.addEventListener("click", () => {
+          if (img.src) openFullscreen(img.src, item.title);
+        });
+
+        feed.appendChild(card);
+      });
+
+      feedFooter.textContent = "• End of list •";
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch(JSON_URL);
+        if (!res.ok) throw new Error("Could not fetch data");
+        allItems = await res.json();
+        renderCards(allItems);
+      } catch (err) {
+        console.error(err);
+        feedFooter.innerHTML = `<span style="color: #ef4444;">Failed to load JSON file</span>`;
+      }
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      const filtered = allItems.filter(item => 
+        (item.title && item.title.toLowerCase().includes(query)) ||
+        (item.desc && item.desc.toLowerCase().includes(query))
+      );
+      renderCards(filtered);
+    });
+
+    function openFullscreen(src, alt) {
+      lightboxImg.src = src;
+      lightboxImg.alt = alt;
+      lightbox.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeFullscreen() {
+      lightbox.classList.remove("active");
+      document.body.style.overflow = "";
+      setTimeout(() => { lightboxImg.src = ""; }, 200);
+    }
+
+    lightbox.addEventListener("click", closeFullscreen);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeFullscreen();
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
