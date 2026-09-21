@@ -5,28 +5,53 @@
     "desc": "As I sit in cyber city and take control just started 2022"
   },
   {
-    "src": "a1",
+    "src": "./media/a1",
     "title": "Happy me",
     "desc": "I take my hat off and smile at you ^.^"
   },
   {
-    "src": "a2",
+    "src": "./media/a2",
     "title": "AGI overwrite",
     "desc": "Start the age of AI write binary directly"
   },
   {
-    "src": "a3",
+    "src": "./media/a3",
     "title": "I'm the CEO of Openland",
     "desc": "Maybe one day I rule."
   },
   {
-   "src": "a4",
+   "src": "./media/a4",
     "title": "Ditch Hyprland",
     "desc": "I stopped using hyprland 2023 knowing very well it's going in the wrong way and kicked vaxry out my system"
   },
   {
-   "src": "a5",
+   "src": "./media/a5",
     "title": "Smart Moth",
     "desc": "All insects are smart I choosed moth because they are kinda cute and beautiful [intelligent/beauty]"
+  },
+  {
+   "src": "./media/a6",
+    "title": "Hello There",
+    "desc": "Welcome to my home glad to see you ^^"
+  },
+  {
+   "src": "./media/a7",
+    "title": "Frutiger Aero",
+    "desc": "I really miss this era"
+  },
+  {
+   "src": "./media/a8",
+    "title": "Heartless",
+    "desc": ""
+  },
+  {
+   "src": "./media/a9",
+    "title": "Heat",
+    "desc": "hell for sand people"
+  },
+  {
+   "src": "./media/a10",
+    "title": "Halano and lain",
+    "desc": "chatting on discord with russian guy since 2023 about linux and his life I called him lain bcz his first pfp as lain iwakura as some linux nerds do"
   }
 ]
